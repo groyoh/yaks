@@ -1,0 +1,12 @@
+CommitMsg:
+  ALL:
+    enabled: false
+
+PreCommit:
+  ALL:
+    enabled: false
+  RuboCop:
+    enabled: true
+    on_warn: fail
+    command: ['bundle', 'exec', 'rubocop', 'yaks']
+    flags:   ['--auto-correct', '--fail-fast', '--format=emacs', '--force-exclusion', '--display-cop-names']

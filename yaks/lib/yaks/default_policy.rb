@@ -1,12 +1,12 @@
 module Yaks
-  class DefaultPolicy
-    include Util
+  class DefaultPolicy    
+    include Util  
 
     # Default policy options.
     DEFAULTS = {
       rel_template: "rel:{rel}",
       namespace: Object
-    }
+    }    
 
     # @!attribute [r]
     #   @return [Hash]
