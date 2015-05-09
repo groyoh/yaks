@@ -7,7 +7,7 @@ RSpec.describe Yaks::DefaultPolicy, '#derive_mapper_from_collection' do
     it 'should raise error' do
       expect do
         policy.derive_mapper_from_collection(Namespace::Nested::Mung.new)
-      end.to raise_error /Failed to find a collection mapper for #<Namespace::Nested::Mung:0x\h+> because it is not a collection/
+      end.to raise_error(/Failed to find a collection mapper for #<Namespace::Nested::Mung:0x\h+> because it is not a collection/)
     end
   end
 
@@ -35,25 +35,25 @@ RSpec.describe Yaks::DefaultPolicy, '#derive_mapper_from_collection' do
                                                                        )
       end
     end
-  end
 
-  context 'when trying to lookup CollectionMapper results in something other than an NameError' do
-    let(:options) { {namespace: DislikesCollectionMapper} }
+    context 'when trying to lookup CollectionMapper results in something other than an NameError' do
+      let(:options) { {namespace: DislikesCollectionMapper} }
 
-    it 'should propagate the error' do
-      expect {
-        policy.derive_mapper_from_object([])
-      }.to raise_error
+      it 'should propagate the error' do
+        expect {
+          policy.derive_mapper_from_object([])
+        }.to raise_error
+      end
     end
-  end
 
-  context 'when trying to lookup a specific collection mapper results in something other than an NameError' do
-    let(:options) { {namespace: DislikesOtherMappers} }
+    context 'when trying to lookup a specific collection mapper results in something other than an NameError' do
+      let(:options) { {namespace: DislikesOtherMappers} }
 
-    it 'should propagate the error' do
-      expect do
-        policy.derive_mapper_from_object([Namespace::Nested::Rye.new])
-      end.to raise_error
+      it 'should propagate the error' do
+        expect do
+          policy.derive_mapper_from_object([Namespace::Nested::Rye.new])
+        end.to raise_error
+      end
     end
   end
 end
