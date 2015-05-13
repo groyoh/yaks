@@ -7,7 +7,7 @@ rvm:
   - 2.2
   - jruby
   - jruby-head
-  - rbx
+  - rbx-2
   - ruby-head
 
 sudo: false
