@@ -1,6 +1,9 @@
 ### master
 [all changes](http://github.com/plexus/yaks/compare/v0.10.0...master)
 
+* Prevent primitivize mappings for a class to be shadowed by a superclass
+  mapping
+
 ### v0.10.0 / 2015-05-19
 [all changes](http://github.com/plexus/yaks/compare/v0.9.0...v0.10.0)
 

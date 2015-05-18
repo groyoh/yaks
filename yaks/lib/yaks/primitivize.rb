@@ -1,14 +1,16 @@
 module Yaks
   class Primitivize
-    attr_reader :mappings
+    attr_reader :mappings, :mappings_order
 
     def initialize
       @mappings = {}
+      @mappings_order = []
     end
 
     def call(object)
-      mappings.each do |pattern, block|
+      mappings_order.each do |pattern|
         # rubocop:disable Style/CaseEquality
+        block = mappings[pattern]
         return instance_exec(object, &block) if pattern === object
       end
       raise PrimitivizeError, "don't know how to turn #{object.class} (#{object.inspect}) into a primitive"
@@ -16,8 +18,10 @@ module Yaks
 
     def map(*types, &block)
       types.each do |type|
+        @mappings_order << type unless mappings.key?(type)
         @mappings = mappings.merge(type => block)
       end
+      mappings_order.sort! { |a, b| (a <=> b).to_i }
     end
 
     def self.create

@@ -5,6 +5,10 @@ RSpec.describe Yaks::Primitivize do
     it "should not create any mappings" do
       expect(described_class.new.mappings).to eql Hash[]
     end
+
+    it "should not create any mappings order" do
+      expect(described_class.new.mappings_order).to eql []
+    end
   end
 
   describe '.create' do
@@ -62,10 +66,10 @@ RSpec.describe Yaks::Primitivize do
       require 'matrix'
 
       let(:primitivizer) do
-        described_class.new.tap do |p|
+        described_class.create.tap do |p|
           p.map Vector do |vec|
             vec.map do |i|
-              call(i)
+              call(i) + 1
             end.to_a
           end
 
@@ -76,7 +80,7 @@ RSpec.describe Yaks::Primitivize do
       end
 
       it 'should evaluate in the context of primitivize' do
-        expect(primitivizer.call(Vector[:foo, :baxxx, :bazz])).to eql([3, 5, 4])
+        expect(primitivizer.call(Vector[:foo, :baxxx, :bazz])).to eql([4, 6, 5])
       end
     end
   end
@@ -89,6 +93,22 @@ RSpec.describe Yaks::Primitivize do
       primitivizer.map(Numeric) {|n| n.next }
 
       expect(primitivizer.call("foo")).to eql "FOO"
+    end
+
+    it "should sort the mappings according to class hierarchy" do
+      primitivizer.map(Array) {|e| e.map(&:to_sym) }
+      primitivizer.map(true) { "true" }
+      primitivizer.map(Enumerable) {|e| e.map(&:to_s) }
+      primitivizer.map(Set) {|e| e.map(&:to_sym) }
+
+      expect(primitivizer.mappings_order).to eq [Array, true, Set, Enumerable]
+    end
+
+    it 'should not add duplicate entries in mapping_order' do
+      primitivizer.map(Enumerable) {|e| e.map(&:to_s) }
+      primitivizer.map(Enumerable) {|e| e.map(&:to_s) }
+
+      expect(primitivizer.mappings_order.size).to be 1
     end
   end
 end
