@@ -65,7 +65,7 @@ RSpec.describe Yaks::Primitivize do
         described_class.new.tap do |p|
           p.map Vector do |vec|
             vec.map do |i|
-              call(i)
+              call(i) + 1
             end.to_a
           end
 
@@ -76,7 +76,7 @@ RSpec.describe Yaks::Primitivize do
       end
 
       it 'should evaluate in the context of primitivize' do
-        expect(primitivizer.call(Vector[:foo, :baxxx, :bazz])).to eql([3, 5, 4])
+        expect(primitivizer.call(Vector[:foo, :baxxx, :bazz])).to eql([4, 6, 5])
       end
     end
   end
@@ -89,6 +89,19 @@ RSpec.describe Yaks::Primitivize do
       primitivizer.map(Numeric) {|n| n.next }
 
       expect(primitivizer.call("foo")).to eql "FOO"
+    end
+
+    it "should set a correct mapping order" do
+      SpecialArray = Class.new(Array)
+      primitivizer.map(Hash) {|n| n.to_s }
+      primitivizer.map(String, Symbol) {|s| s.upcase }
+      primitivizer.map(Enumerable) {|n| n.size.to_s }
+      primitivizer.map(Array) {|n| n.size }
+      primitivizer.map(SpecialArray) {|n| n.size + 1 }
+
+      expect(primitivizer.mappings_order).to eq [Hash, String, Symbol, SpecialArray, Array, Enumerable]
+
+      puts primitivizer.mappings_dependencies
     end
   end
 end
